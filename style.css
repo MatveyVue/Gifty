@@ -1,0 +1,328 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-image: url('backgroung.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding-bottom: 80px;
+    padding-top: 260px;
+    overflow-x: hidden;
+}
+
+/* ===== ПРОФИЛЬ ===== */
+.profile-container {
+    background-color: rgb(30, 30, 30);
+    height: 250px;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    position: fixed;
+    width: 100%;
+    margin-top: -22px;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-container img {
+    border: 3px solid rgb(22, 123, 212);
+    object-fit: cover;
+}
+
+.profile-container h2 {
+    margin-top: 12px;
+    font-size: 22px;
+    font-weight: 600;
+    color: white;
+}
+
+.profile-container .username {
+    color: rgb(150, 150, 150);
+    font-size: 14px;
+    margin-top: -5px;
+}
+
+/* ===== СООБЩЕНИЯ ===== */
+#post-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 8px 12px;
+    padding-bottom: 20px;
+}
+
+/* Каждое сообщение */
+.post-item {
+    display: flex;
+    flex-direction: column;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Верхняя часть сообщения (имя + текст) */
+.post-top {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    margin-bottom: 4px;
+}
+
+/* Имя пользователя */
+.post-name {
+    color: rgb(255, 255, 255);
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 2px;
+    margin-left: 35px;
+}
+
+/* Контейнер сообщения */
+.post-message-wrapper {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+/* Облачко сообщения */
+.post-bubble {
+    background: #1e2a3a;
+    padding: 10px 14px;
+    border-radius: 18px;
+    border-bottom-left-radius: 4px;
+    max-width: 80%;
+    word-wrap: break-word;
+    margin-left: 30px;
+}
+
+.post-text {
+    color: white;
+    font-size: 15px;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+/* Время под сообщением */
+.post-time {
+    color: #6c6c70;
+    font-size: 10px;
+    margin-top: 4px;
+    margin-left: 32px;
+    letter-spacing: 0.3px;
+}
+
+/* Аватар снизу справа от сообщения */
+.post-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    float: left;
+    position: absolute;
+    margin-bottom: -5px;
+    margin-left: -4px;
+}
+
+/* ===== ИНДИКАТОР ПЕЧАТИ ===== */
+.typing-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(30, 30, 30, 0.9);
+    border-radius: 20px;
+    position: fixed;
+    bottom: 80px;
+    left: 12px;
+    z-index: 20;
+    animation: fadeInUp 0.3s ease;
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.typing-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.typing-text {
+    color: #8e8e93;
+    font-size: 13px;
+}
+
+.typing-dots {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+}
+
+.typing-dots span {
+    width: 5px;
+    height: 5px;
+    background: #8e8e93;
+    border-radius: 50%;
+    animation: typing 1.4s infinite ease-in-out;
+}
+
+.typing-dots span:nth-child(1) { animation-delay: 0s; }
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typing {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-6px); opacity: 1; }
+}
+
+/* ===== ПАНЕЛЬ ВВОДА ===== */
+.create-conatiner {
+    background-color: rgba(30, 30, 30, 0.95);
+    backdrop-filter: blur(10px);
+    width: 100%;
+    height: 80px;
+    bottom: 0;
+    position: fixed;
+    border-top: 0.5px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    gap: 12px;
+    z-index: 15;
+    box-sizing: border-box;
+}
+
+.create-conatiner .bottom-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.about {
+    flex: 1;
+    min-width: 0;
+    background-color: rgb(37, 37, 37);
+    border: none;
+    height: 44px;
+    border-radius: 24px;
+    color: white;
+    font-size: 16px;
+    padding: 0 16px;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.about:focus {
+    outline: none;
+    border: 1px solid rgb(22, 123, 212);
+}
+
+.about::placeholder {
+    color: #8e8e93;
+}
+
+.create {
+    background-color: rgb(22, 123, 212);
+    border: none;
+    border-radius: 50%;
+    width: 46px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.create:active {
+    transform: scale(0.95);
+}
+
+.create p {
+    margin: 0;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 1;
+}
+
+/* Пустое состояние */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #8e8e93;
+}
+
+.empty-state svg {
+    margin-bottom: 12px;
+    opacity: 0.5;
+}
+
+/* Скрытый элемент */
+.hidden {
+    display: none !important;
+}
+
+/* Добавьте в конец файла */
+
+/* Кнопка прокрутки вниз */
+.scroll-bottom-btn {
+    position: fixed;
+    bottom: 90px;
+    right: 16px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: rgb(22, 123, 212);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 20;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    transition: all 0.2s ease;
+}
+
+.scroll-bottom-btn:hover {
+    transform: scale(1.05);
+}
+
+.scroll-bottom-btn:active {
+    transform: scale(0.95);
+}
+
+.scroll-bottom-btn.hidden {
+    display: none;
+}
+
+.new-messages-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: red;
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
