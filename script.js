@@ -15,10 +15,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// Telegram WebApp
 let tgUser = null;
 let userPhotoUrl = '';
 let typingTimeout = null;
+let firstLoad = true;
 
 try {
     const webApp = window.Telegram.WebApp;
@@ -27,7 +27,6 @@ try {
     tgUser = webApp.initDataUnsafe?.user;
     
     if (tgUser) {
-        // Получаем фото пользователя из Telegram
         if (tgUser.photo_url) {
             userPhotoUrl = tgUser.photo_url;
         } else {
@@ -48,12 +47,28 @@ try {
     console.log('Not in Telegram');
 }
 
-// ===== ЭЛЕМЕНТЫ =====
 const textInput = document.getElementById("text");
 const typingIndicator = document.getElementById("typingIndicator");
 const postContainer = document.getElementById("post-container");
 const scrollToBottomBtn = document.getElementById("scrollToBottomBtn");
 const typingStatusRef = ref(db, 'typing/' + (tgUser?.id || 'guest'));
+
+// ===== ИСПРАВЛЕННАЯ ФУНКЦИЯ ПРОКРУТКИ =====
+function scrollToBottom() {
+    console.log('Скроллим вниз, высота:', postContainer.scrollHeight);
+    // Пробуем разные способы
+    postContainer.scrollTop = postContainer.scrollHeight;
+    // Альтернативный способ
+    window.scrollTo(0, document.body.scrollHeight);
+}
+
+// Кнопка прокрутки
+if (scrollToBottomBtn) {
+    scrollToBottomBtn.onclick = function() {
+        console.log('Кнопка нажата!');
+        scrollToBottom();
+    };
+}
 
 // ===== ИНДИКАТОР ПЕЧАТИ =====
 function startTyping() {
@@ -86,7 +101,6 @@ textInput.addEventListener('input', () => {
     }
 });
 
-// Слушаем кто печатает
 const allTypingRef = ref(db, 'typing');
 onValue(allTypingRef, (snapshot) => {
     const typingUsers = [];
@@ -110,28 +124,6 @@ onValue(allTypingRef, (snapshot) => {
     }
 });
 
-// ===== ПРОКРУТКА =====
-function scrollToBottom() {
-    postContainer.scrollTop = postContainer.scrollHeight;
-}
-
-function isAtBottom() {
-    return postContainer.scrollHeight - postContainer.scrollTop - postContainer.clientHeight < 50;
-}
-
-// Показываем/скрываем кнопку скролла
-postContainer.addEventListener('scroll', () => {
-    if (isAtBottom()) {
-        scrollToBottomBtn.classList.add('hidden');
-    } else {
-        scrollToBottomBtn.classList.remove('hidden');
-    }
-});
-
-scrollToBottomBtn.addEventListener('click', () => {
-    scrollToBottom();
-});
-
 // ===== СОЗДАНИЕ ПОСТА =====
 const PostButton = document.getElementById("post");
 
@@ -143,7 +135,6 @@ PostButton.addEventListener('click', () => {
     
     if (text) {
         stopTyping();
-        
         const timestamp = Date.now();
         const newPostRef = ref(db, 'posts/' + timestamp);
         
@@ -158,6 +149,7 @@ PostButton.addEventListener('click', () => {
         .then(() => {
             textInput.value = '';
             textInput.blur();
+            setTimeout(() => scrollToBottom(), 100);
         })
         .catch((error) => {
             console.error("Error:", error);
@@ -184,17 +176,13 @@ const postsRef = ref(db, 'posts');
 const postsQuery = query(postsRef, orderByChild('timestamp'));
 
 onValue(postsQuery, (snapshot) => {
-    const wasAtBottom = isAtBottom();
-    
     const posts = [];
     snapshot.forEach(childSnapshot => {
         posts.push({ id: childSnapshot.key, ...childSnapshot.val() });
     });
     
-    // Сортируем по времени — старые сверху, новые снизу
     posts.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
     
-    // Очищаем контейнер
     postContainer.innerHTML = '';
     
     if (posts.length === 0) {
@@ -210,7 +198,6 @@ onValue(postsQuery, (snapshot) => {
         return;
     }
     
-    // Отображаем посты
     posts.forEach(post => {
         const postElement = document.createElement('div');
         postElement.classList.add('post-item');
@@ -235,13 +222,13 @@ onValue(postsQuery, (snapshot) => {
         postContainer.appendChild(postElement);
     });
     
-    // Скроллим вниз если было внизу или новое сообщение
-    if (wasAtBottom) {
-        scrollToBottom();
+    if (firstLoad) {
+        setTimeout(() => {
+            scrollToBottom();
+            firstLoad = false;
+        }, 200);
     }
 });
 
-// При загрузке страницы скроллим вниз
-setTimeout(() => {
-    scrollToBottom();
-}, 500);
+// Дополнительная проверка стилей postContainer
+console.log('postContainer стили:', window.getComputedStyle(postContainer).overflow);
